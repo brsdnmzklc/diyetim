@@ -1,36 +1,27 @@
 import React, {useState} from 'react';
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  Alert,
-  ActivityIndicator,
-} from 'react-native';
+import {View, Text, TextInput, TouchableOpacity, Alert} from 'react-native';
 import styles from './SignupScreen.style';
-import auth from '@react-native-firebase/auth';
 
 const SignupScreen = ({navigation}) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [loading, setLoading] = useState(false);
-  const handleFormSubmit = async () => {
+
+  const handleFormSubmit = () => {
     if (password !== confirmPassword) {
       Alert.alert('Şifreler Uyuşmuyor');
+
+      return;
     }
     if (password === '' || email === '') {
       Alert.alert('Email veya Şifre Boş Bırakılamaz');
+
       return;
     }
-    try {
-      setLoading(true);
-      await auth().createUserWithEmailAndPassword(email, password);
-      setLoading(false);
-    } catch (error) {
-      console.log(error);
-      setLoading(false);
-    }
+    navigation.navigate('UserInfo', {
+      email: email,
+      password: password,
+    });
   };
   return (
     <View style={styles.container}>
@@ -44,18 +35,16 @@ const SignupScreen = ({navigation}) => {
           placeholder="Password"
           style={styles.input}
           onChangeText={setPassword}
+          secureTextEntry={true}
         />
         <TextInput
           placeholder="Confirm Password"
           style={styles.input}
           onChangeText={setConfirmPassword}
+          secureTextEntry={true}
         />
         <TouchableOpacity style={styles.button} onPress={handleFormSubmit}>
-          {loading ? (
-            <ActivityIndicator size={20} color="#ffffff" />
-          ) : (
-            <Text style={styles.buttonText}>SIGN UP</Text>
-          )}
+          <Text style={styles.buttonText}>NEXT</Text>
         </TouchableOpacity>
         <View style={styles.footerContainer}>
           <Text>Already have an account?</Text>

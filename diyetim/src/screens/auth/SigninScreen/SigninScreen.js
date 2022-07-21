@@ -35,6 +35,7 @@ const SigninScreen = ({navigation}) => {
           placeholder="Password"
           style={styles.input}
           onChangeText={setPassword}
+          secureTextEntry={true}
         />
         <TouchableOpacity style={styles.button} onPress={handleFormSubmit}>
           {loading ? (
