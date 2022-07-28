@@ -25,7 +25,7 @@ const CaloriesDetail = ({data}) => {
           </View>
           <View style={styles.subContainer}>
             <Text style={styles.text}>
-              {data.data.goals['Weight loss'].calory - totalCal}
+              {Math.round(data.data.goals['Weight loss'].calory - totalCal)}
             </Text>
             <Text style={styles.text}>Kalan</Text>
           </View>
