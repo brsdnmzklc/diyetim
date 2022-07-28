@@ -1,9 +1,9 @@
 import {StyleSheet} from 'react-native';
 
 export default StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 10,
-    paddingVertical: 40,
+  icon: {
+    position: 'absolute',
+    right: 5,
+    top: 10,
   },
 });

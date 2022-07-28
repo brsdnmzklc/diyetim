@@ -2,97 +2,85 @@ import React, {useEffect, useState} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import AppProvider from './src/context/Provider';
+import WelcomeScreen from './src/screens/WelcomeScreen/WelcomeScreen';
 import SigninScreen from './src/screens/auth/SigninScreen/SigninScreen';
 import SignupScreen from './src/screens/auth/SignupScreen/SignupScreen';
-import UserInfo from './src/screens/auth/UserInfo/UserInfo';
+import UserInfo from './src/screens/UserInfo/UserInfo';
 import HomeScreen from './src/screens/HomeScreen/HomeScreen';
+import MealDetailScreen from './src/screens/MealDetailScreen/MealDetailScreen';
+import ProfileScreen from './src/screens/ProfileScreen/ProfileScreen';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import auth from '@react-native-firebase/auth';
+
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
 const Router = () => {
   const [userSession, setUserSession] = useState();
-
   useEffect(() => {
-    auth().onAuthStateChanged(user => setUserSession(!!user));
+    auth().onAuthStateChanged(userSession => {
+      setUserSession(userSession);
+    });
   }, []);
-
-  console.log(userSession);
+  const HomeStack = () => {
+    return (
+      <Stack.Navigator screenOptions={{headerShown: false}}>
+        <Stack.Screen name="HomeStack" component={HomeScreen} />
+        <Stack.Screen name="MealDetail" component={MealDetailScreen} />
+      </Stack.Navigator>
+    );
+  };
   return (
     <NavigationContainer>
       {userSession ? (
-        <>
-          <Tab.Navigator>
-            <Tab.Screen
-              options={{
-                headerTitleStyle: {
-                  fontSize: 30,
-                },
-                headerTitleAlign: 'center',
-                headerTintColor: '#ffffff',
-                title: 'diyetim',
-                headerStyle: {
-                  backgroundColor: '#07635D',
-                },
-              }}
-              name="Home"
-              component={HomeScreen}
-            />
-          </Tab.Navigator>
-        </>
+        <Tab.Navigator screenOptions={{headerShown: false}}>
+          <Tab.Screen
+            options={{
+              tabBarIcon: ({focused}) =>
+                focused ? (
+                  <Icon name="home" size={30} color="#7209b7" />
+                ) : (
+                  <Icon name="home" size={30} color="#e0c3fc" />
+                ),
+              tabBarShowLabel: false,
+            }}
+            name={'Home'}
+            component={HomeStack}
+          />
+          <Tab.Screen
+            options={{
+              tabBarIcon: ({focused}) =>
+                focused ? (
+                  <Icon name="account" size={30} color="#7209b7" />
+                ) : (
+                  <Icon name="account" size={30} color="#e0c3fc" />
+                ),
+              tabBarShowLabel: false,
+            }}
+            name={'Profile'}
+            component={ProfileScreen}
+          />
+        </Tab.Navigator>
       ) : (
-        <>
-          <Stack.Navigator>
-            <Stack.Screen
-              name="Signin"
-              component={SigninScreen}
-              options={{
-                headerTitleStyle: {
-                  fontSize: 30,
-                },
-                headerTitleAlign: 'center',
-                headerTintColor: '#ffffff',
-                title: 'diyetim',
-                headerStyle: {
-                  backgroundColor: '#07635D',
-                },
-              }}
-            />
-            <Stack.Screen
-              name="Signup"
-              component={SignupScreen}
-              options={{
-                headerTitleStyle: {
-                  fontSize: 30,
-                },
-                headerTitleAlign: 'center',
-                headerTintColor: '#ffffff',
-                title: 'diyetim',
-                headerStyle: {
-                  backgroundColor: '#07635D',
-                },
-              }}
-            />
-            <Stack.Screen
-              name="UserInfo"
-              component={UserInfo}
-              options={{
-                headerTitleStyle: {
-                  fontSize: 30,
-                },
-                headerTitleAlign: 'center',
-                headerTintColor: '#ffffff',
-                title: 'diyetim',
-                headerStyle: {
-                  backgroundColor: '#07635D',
-                },
-              }}
-            />
-          </Stack.Navigator>
-        </>
+        <Stack.Navigator
+          screenOptions={{
+            headerShown: false,
+          }}>
+          <Stack.Screen name="Welcome" component={WelcomeScreen} />
+          <Stack.Screen name="Signin" component={SigninScreen} />
+          <Stack.Screen name="Signup" component={SignupScreen} />
+          <Stack.Screen name="UserInfo" component={UserInfo} />
+        </Stack.Navigator>
       )}
     </NavigationContainer>
   );
 };
 
-export default Router;
+export default () => {
+  return (
+    <AppProvider>
+      <Router />
+    </AppProvider>
+  );
+};
